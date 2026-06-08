@@ -7,9 +7,10 @@ paginate: false
 
 <!-- _class: cover -->
 
-# 示範簡報
+# 程式設計概論
+# Introduction
 
-## 副標題 · 2026.06 · 單位名稱
+## 許智超
 
 <hr>
 
