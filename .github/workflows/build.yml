@@ -30,13 +30,21 @@ jobs:
       - name: Build slides
         run: |
           mkdir -p _site
+
+          # Build --theme-set args from individual CSS files (marp-cli requires file paths, not directories)
+          THEME_ARGS=""
+          for css in themes/*.css; do
+            [ -f "$css" ] && THEME_ARGS="$THEME_ARGS --theme-set $css"
+          done
+
           for dir in slides/*/; do
             [ -f "${dir}slide.md" ] || continue
             name=$(basename "$dir")
             mkdir -p "_site/$name"
+            # shellcheck disable=SC2086
             marp "${dir}slide.md" \
               --theme gaia \
-              --theme-set themes/ \
+              $THEME_ARGS \
               --html \
               -o "_site/$name/index.html"
             [ -d "${dir}assets" ] && cp -r "${dir}assets/." "_site/$name/assets/"
