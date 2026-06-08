@@ -45,10 +45,19 @@ jobs:
             name=$(basename "$dir")
             mkdir -p "_site/$name"
 
+            # --theme gaia is the default, but front matter theme: takes precedence.
+            # marp-cli v4 --theme flag overrides front matter, so only pass it when
+            # the slide has no theme declaration.
+            if grep -qE '^theme:' "${dir}slide.md"; then
+              DEFAULT_THEME=""
+            else
+              DEFAULT_THEME="--theme gaia"
+            fi
+
             set +e
             # shellcheck disable=SC2086
             marp "${dir}slide.md" \
-              --theme gaia \
+              $DEFAULT_THEME \
               $THEME_ARGS \
               --html \
               -o "_site/$name/index.html" 2>&1
