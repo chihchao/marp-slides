@@ -1,6 +1,6 @@
 ---
 marp: true
-theme: corporate
+theme: gaia
 paginate: true
 title: 示範簡報
 ---
