@@ -1,8 +1,15 @@
 ---
 marp: true
-theme: corporate
+theme: gaia
 paginate: true
 title: 示範簡報
+style: |
+    :root {
+        --color-background: #fff;
+        --color-foreground: #333;
+        --color-highlight: #69f;
+        --color-dimmed: #888;
+    }
 ---
 
 <!-- _class: cover -->
