@@ -29,26 +29,43 @@ jobs:
 
       - name: Build slides
         run: |
+          echo "marp $(marp --version)"
+
           mkdir -p _site
 
-          # Build --theme-set args from individual CSS files (marp-cli requires file paths, not directories)
           THEME_ARGS=""
           for css in themes/*.css; do
-            [ -f "$css" ] && THEME_ARGS="$THEME_ARGS --theme-set $css"
+            [ -f "$css" ] && THEME_ARGS="$THEME_ARGS --theme-set $(realpath "$css")"
           done
+          echo "Theme args:${THEME_ARGS:- (none)}"
 
+          build_failed=0
           for dir in slides/*/; do
             [ -f "${dir}slide.md" ] || continue
             name=$(basename "$dir")
             mkdir -p "_site/$name"
+
+            set +e
             # shellcheck disable=SC2086
             marp "${dir}slide.md" \
               --theme gaia \
               $THEME_ARGS \
               --html \
-              -o "_site/$name/index.html"
+              -o "_site/$name/index.html" 2>&1
+            marp_exit=$?
+            set -e
+
+            if [ ! -f "_site/$name/index.html" ]; then
+              echo "ERROR: no output for $name (marp exit $marp_exit)"
+              build_failed=1
+            elif [ $marp_exit -ne 0 ]; then
+              echo "WARNING: marp exit $marp_exit for $name — output created, continuing"
+            fi
+
             [ -d "${dir}assets" ] && cp -r "${dir}assets/." "_site/$name/assets/"
           done
+
+          [ $build_failed -eq 0 ] || exit 1
 
       - name: Generate index page
         run: |
