@@ -38,7 +38,6 @@ jobs:
               --theme gaia \
               --theme-set themes/ \
               --html \
-              --allow-local-files \
               -o "_site/$name/index.html"
             [ -d "${dir}assets" ] && cp -r "${dir}assets/." "_site/$name/assets/"
           done
